@@ -12,7 +12,7 @@ cnt_up=0
 cnt_down=0
 
 
-cap=cv2.VideoCapture("videos/VIDEO3.avi")
+cap=cv2.VideoCapture("VIDEO3.avi")
 
 #Get width and height of video
 
@@ -101,7 +101,7 @@ fline = roiLine(150, 0)
 sline = roiLine(250, 5)
 fps = cap.get(cv2.CAP_PROP_FPS)
 color = "unknown"
-licPlate = "unknown"
+licPlate = ""
 wait = 1 / fps
 while(cap.isOpened()):
     time.sleep(wait)
@@ -111,6 +111,15 @@ while(cap.isOpened()):
     height, width, layers = frame.shape
     new_h = height // 2
     new_w = width // 2
+    frame2 = frame[100:] #Farkhad
+    licPlate = Main.main(frame2) #Farkhad
+    if(licPlate != ""): #Farkhad
+        result = cv2.resize(frame2, (0, 0), fy = 0.5, fx = 0.5) #Farkhad
+        cv2.imwrite(str(licPlate) + ".jpg", result) #Farkhad
+        file = open("LicensePlates.txt", "a") #Farkhad
+        file.write("{}\n".format(licPlate)) #Farkhad
+        file.close() #Farkhad
+        print("Detected license plate: " + str(licPlate) + "\n") #Farkhad
     frame = cv2.resize(frame, (new_w, new_h))
     frame_num += 1
     #transpose(image, image)
@@ -200,9 +209,13 @@ while(cap.isOpened()):
                     #color = color_recognition_api.color_recognition(crop_vehicle)
                     #cv2.imshow("cropped_second", crop_vehicle)
                     cv2.imwrite("secondPass.jpg", crop_vehicle)
-                    """licPlate = Main.main(crop_vehicle)
+                    """licPlate = Main.main(frame2)
                     if(licPlate != ""):
-                        cv2.imwrite("detected.jpg", crop_vehicle)"""
+                        cv2.imwrite("detected.jpg", crop_vehicle)
+                        file = open("LicensePlates.txt", "a")
+                        file.write("{}\n".format(licPlate))
+                        file.close()
+                        print("Detected license plate: " + str(licPlate) + "\n")"""
                     
                 key_to_del = None
                 key2_to_del = None
@@ -272,12 +285,3 @@ while(cap.isOpened()):
 
 cap.release()
 cv2.destroyAllWindows()
-
-
-
-
-
-
-
-
-
