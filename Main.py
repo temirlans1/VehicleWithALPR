@@ -20,6 +20,254 @@ config = ('-l eng --oem 3 --psm 6')
 showSteps = False
 
 ###################################################################################################
+def russia(result1, result2, result3):
+    result1.replace(" ", "")
+    output = result1
+    valid = True
+    j = 0
+    
+    if len(result1) > 9 or len(result1) < 8:
+        valid = False
+        
+    for i in result1:
+        if j == 0 or j == 4 or j == 5:
+            if not ((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
+                valid = False
+                break
+        if j == 1 or j == 2 or j == 3 or j == 6 or j == 7 or j == 8:
+            if not (ord(i) >= 48 and ord(i) <= 57):
+                valid = False
+                break
+        if j == 8:
+            if not ((ord(i) >= 48 and ord(i) <= 57) or (ord(i) <= 32 and ord(i) >= 0)):
+                valid = False
+                break
+        j += 1
+
+    if valid:
+
+        return output
+
+    else:
+
+        valid = True
+        j = 0
+        output = result2
+
+        if len(result2) != 8 or len(result2) != 9:
+            valid = False
+
+        for i in result2:
+            if j == 0 or j == 4 or j == 5:
+                if not ((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
+                    valid = False
+                    break
+            if j == 1 or j == 2 or j == 3 or j == 6 or j == 7 or j == 8:
+                if not (ord(i) >= 48 and ord(i) <= 57):
+                    valid = False
+                    break
+            j += 1
+
+        if valid:
+
+            return output
+
+        else:
+
+            valid = True
+            j = 0
+            output = result3
+
+            if len(result3) != 8 or len(result3) != 9:
+                valid = False
+
+            for i in result3:
+                if j == 0 or j == 4 or j == 5:
+                    if not ((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
+                        valid = False
+                        break
+                if j == 1 or j == 2 or j == 3 or j == 6 or j == 7 or j == 8:
+                    if not (ord(i) >= 48 and ord(i) <= 57):
+                        valid = False
+                        break
+                j += 1
+
+            if valid:
+
+                return output
+
+            else:
+                
+                valid = True
+                j = 0
+                output = ""
+    
+                for i in result2:
+                    if result3.find(i) != -1:
+                        j += 1
+                    if j == 1:
+                        output += i
+                        j = 0
+
+                if len(output) != 8 or len(output) != 9:
+                    valid = False
+                    
+                j = 0
+                for i in output:
+                    if j == 0 or j == 4 or j == 5:
+                        if not ((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
+                            valid = False
+                            break
+                    if j == 1 or j == 2 or j == 3 or j == 6 or j == 7 or j == 8:
+                        if not (ord(i) >= 48 and ord(i) <= 57):
+                            valid = False
+                            break
+                    j += 1
+
+                if valid:
+
+                    return output
+
+                else:
+
+                    return ""
+
+def kazakhstan(result1, result2, result3):
+
+    output = result1
+    valid = True
+    j = 0
+
+    if len(result1) != 7:
+        valid = False
+        
+    for i in result1:
+        if j == 0 or j == 4 or j == 5 or j == 6:
+            if not ((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
+                valid = False
+                break
+        if j == 1 or j == 2 or j == 3:
+            if not (ord(i) >= 48 and ord(i) <= 57):
+                valid = False
+                break
+        j += 1
+    
+    if valid:
+
+        return output
+
+    else:
+
+        output = result1
+        valid = True
+        j = 0
+
+        if len(result1) != 8:
+            valid = False
+            
+        for i in output:
+            if j == 0 or j == 1 or j == 2 or j == 6:
+                if not (ord(i) >= 48 and ord(i) <= 57):
+                    valid = False
+                    break
+            if j == 3 or j == 4 or j == 5:
+                if not((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
+                    valid = False 
+                    break 
+            if j == 7:
+                if not ((ord(i) >= 48 and ord(i) <= 57) or (ord(i) <= 32 and ord(i) >= 0)):
+                    valid = False
+                    break 
+            j += 1
+
+        if valid:
+        
+            return output
+        
+        else:
+
+            valid = True
+            j = 0
+            output = result2
+
+            if len(output) != 8:
+                valid = False
+                
+            for i in output:
+                if j == 0 or j == 1 or j == 2 or j == 6 or j == 7:
+                    if not (ord(i) >= 48 and ord(i) <= 57):
+                        valid = False
+                        break
+                if j == 3 or j == 4 or j == 5:
+                    if not((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
+                        valid = False 
+                        break  
+                j += 1
+
+            if valid:
+
+                return output
+
+            else:
+
+                valid = True
+                j = 0
+                output = result3
+
+                if len(output) != 8:
+                    valid = False
+                    
+                for i in output:
+                    if j == 0 or j == 1 or j == 2 or j == 6 or j == 7:
+                        if not (ord(i) >= 48 and ord(i) <= 57):
+                            valid = False
+                            break
+                    if j == 3 or j == 4 or j == 5:
+                        if not ((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
+                            valid = False   
+                            break
+                    j += 1
+
+                if valid:
+
+                    return output
+
+                else:
+                    
+                    valid = True
+                    j = 0
+                    output = ""
+        
+                    for i in result2:
+                        if result3.find(i) != -1:
+                            j += 1
+                        if j == 1:
+                            output += i
+                            j = 0
+
+                    if len(output) != 8:
+                        valid = False
+                        
+                    j = 0
+                    for i in output:
+                        if j == 0 or j == 1 or j == 2 or j == 6 or j == 7:
+                            if not (ord(i) >= 48 and ord(i) <= 57):
+                                valid = False
+                                break
+                        if j == 3 or j == 4 or j == 5:
+                            if not ((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
+                                valid = False  
+                                break 
+                        j += 1
+
+                    if valid:
+
+                        return output
+
+                    else:
+
+                        return ""
+
 def main(frame):
 
     blnKNNTrainingSuccessful = DetectChars.loadKNNDataAndTrainKNN()         # attempt KNN training
@@ -120,140 +368,14 @@ def main(frame):
 
         drawRedRectangleAroundPlate(imgOriginalScene, licPlate)             # draw red rectangle around plate
 
-        filtered_tesseract = ""
+        licPlate.strChars = russia(filtered_result, tesseractEnlarged3, tesseractEnlarged4)
 
-        for i in tesseract:
-                if (ord(i) >= 48 and ord(i) <= 57) or (ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122):
-                        filtered_tesseract += i
+        if licPlate.strChars == "":
+            licPlate.strChars = kazakhstan(filtered_result, tesseractEnlarged3, tesseractEnlarged4)
 
-        j = 0
+        licPlate.strChars = licPlate.strChars.upper()
 
-        for i in licPlate.strChars:
-            if j == 0 or j == 1 or j == 2 or j == 3:
-                if (ord(i) >= 48 and ord(i) <= 57):
-                    j += 1
-        
-        if j == 4:
-            licPlate.strChars = licPlate.strChars[1:]
-
-        j = 0
-        
-        for i in licPlate.strChars:
-            if j == 4 or j == 5 or j == 6 or j == 7:
-                if (ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122):
-                    j += 1
-
-        if j == 4:
-            licPlate.strChars = licPlate.strChars[:6] + licPlate.strChars[7:]
-
-        j = 0
-        k = 0
-        finalResult = ""
-
-        if len(filtered_tesseract) <= 3:
-            filtered_tesseract = ""
-
-        valid = True
-        j = 0
-
-        if len(filtered_result) != 7:
-            valid = False
-
-        for i in filtered_result:
-            if j == 0 or j == 4 or j == 5 or j == 6:
-                if not ((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
-                    valid = False
-                    break
-            if j == 1 or j == 2 or j == 3:
-                if not (ord(i) >= 48 and ord(i) <= 57):
-                    valid = False
-                    break
-            j += 1
-        
-        if valid:
-            licPlate.strChars = filtered_result
-        else:
-
-            valid = True
-            j = 0
-            finalResult = tesseractEnlarged3
-
-            if len(finalResult) != 8:
-                valid = False
-
-            for i in finalResult:
-                if j == 0 or j == 1 or j == 2 or j == 6 or j == 7:
-                    if not (ord(i) >= 48 and ord(i) <= 57):
-                        valid = False
-                        break
-                if j == 3 or j == 4 or j == 5:
-                    if not((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
-                        valid = False 
-                        break  
-                j += 1
-
-            if valid:
-                licPlate.strChars = finalResult
-            else:
-
-                valid = True
-                j = 0
-                finalResult = tesseractEnlarged4
-
-                if len(finalResult) != 8:
-                    valid = False
-
-                for i in finalResult:
-                    if j == 0 or j == 1 or j == 2 or j == 6 or j == 7:
-                        if not (ord(i) >= 48 and ord(i) <= 57):
-                            valid = False
-                            break
-                    if j == 3 or j == 4 or j == 5:
-                        if not ((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
-                            valid = False   
-                            break
-                    j += 1
-
-                if valid:
-                    licPlate.strChars = finalResult
-                else:
-                    
-                    valid = True
-                    j = 0
-                    finalResult = ""
-        
-                    for i in tesseractEnlarged3:
-                        if tesseractEnlarged4.find(i) != -1:
-                            j += 1
-                        if j == 1:
-                            finalResult += i
-                            j = 0
-
-                    if len(finalResult) != 8:
-                        valid = False
-
-                    j = 0
-
-                    for i in finalResult:
-                        if j == 0 or j == 1 or j == 2 or j == 6 or j == 7:
-                            if not (ord(i) >= 48 and ord(i) <= 57):
-                                valid = False
-                                break
-                        if j == 3 or j == 4 or j == 5:
-                            if not ((ord(i) >= 65 and ord(i) <= 90) or (ord(i) >= 97 and ord(i) <= 122)):
-                                valid = False  
-                                break 
-                        j += 1
-
-                    if valid:
-                        licPlate.strChars = finalResult
-                    else:
-                        licPlate.strChars = ""
-        
-    if licPlate.strChars is None:
-        licPlate.strChars = ""
-
-    return licPlate.strChars.upper()
+    return licPlate.strChars
 # end main
 
 ###################################################################################################
@@ -306,21 +428,3 @@ def writeLicensePlateCharsOnImage(imgOriginalScene, licPlate):
             # write the text on the image
     cv2.putText(imgOriginalScene, licPlate.strChars, (ptLowerLeftTextOriginX, ptLowerLeftTextOriginY), intFontFace, fltFontScale, SCALAR_YELLOW, intFontThickness)
 # end function
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
