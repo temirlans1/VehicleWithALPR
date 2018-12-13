@@ -12,7 +12,7 @@ cnt_up=0
 cnt_down=0
 
 
-cap=cv2.VideoCapture("VIDEO3.avi")
+cap=cv2.VideoCapture("russian.mp4")
 
 #Get width and height of video
 
