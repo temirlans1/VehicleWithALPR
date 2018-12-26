@@ -93,25 +93,37 @@ try:
 
         if len(result) != 0:
 
-            for i in carnums:
+            exist = False
+
+            cur.execute("""SELECT carnum FROM detected_plates;""")
+            detected = cur.fetchall()
+
+            for i in detected:
                 if result == i[0]:
-                    found = True
-                    cur2.execute("SELECT * FROM penalties WHERE id = %s", (j,))
-                    resultRow = cur2.fetchone()
+                    exist = True
+                    break
+
+            if not exist:
+
+                for i in carnums:
+                    if result == i[0]:
+                        found = True
+                        cur2.execute("SELECT * FROM penalties WHERE id = %s", (j,))
+                        resultRow = cur2.fetchone()
+                        cur.execute("""INSERT INTO detected_plates(time, date, carnum, full_name, penalties_info) 
+                                    VALUES (%s, %s, %s, %s, %s);""", ("{}:{}".format((int(video_time / 60)), (int(video_time) % 60)), "11-12-2018", result, resultRow[2], resultRow[3]))
+                        cur.execute("SELECT * FROM detected_plates")
+                        resultTable = cur.fetchall()
+                        print(str(resultTable))
+                        break
+                    j += 1
+
+                if not found:
                     cur.execute("""INSERT INTO detected_plates(time, date, carnum, full_name, penalties_info) 
-                                VALUES (%s, %s, %s, %s, %s);""", ("{}:{}".format((int(video_time / 60)), (int(video_time) % 60)), "11-12-2018", result, resultRow[2], resultRow[3]))
+                                VALUES (%s, %s, %s, %s, %s);""", ("{}:{}".format((int(video_time / 60)), (int(video_time) % 60)), "11-12-2018", result, "Unknown", "None"))
                     cur.execute("SELECT * FROM detected_plates")
                     resultTable = cur.fetchall()
                     print(str(resultTable))
-                    break
-                j += 1
-
-            if not found:
-                cur.execute("""INSERT INTO detected_plates(time, date, carnum, full_name, penalties_info) 
-                            VALUES (%s, %s, %s, %s, %s);""", ("{}:{}".format((int(video_time / 60)), (int(video_time) % 60)), "11-12-2018", result, "Unknown", "None"))
-                cur.execute("SELECT * FROM detected_plates")
-                resultTable = cur.fetchall()
-                print(str(resultTable))
 
         n += 1
 
