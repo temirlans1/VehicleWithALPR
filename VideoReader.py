@@ -4,10 +4,10 @@ import Main
 
 if __name__ == "__main__":
     
-    cap = cv2.VideoCapture("russian.mp4")
+    cap = cv2.VideoCapture("VIDEO3.avi")
     length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     n = 0
-    clip = VideoFileClip("russian.mp4")
+    clip = VideoFileClip("VIDEO3.avi")
     
     while (n != length):
         
@@ -18,8 +18,11 @@ if __name__ == "__main__":
         frame1 = frame[100:]
             #frame2 = frame[400:600, 750:1900]
             #cv2.waitKey(0)
+        result = str(Main.main(frame1))
+        if len(result) != 0:
+            print("Found plate: " + result + "\n")
 
-        print("Found plate: " + str(Main.main(frame1)) + "\n")
+        cv2.imshow('Video', frame1)
             #Main.main(frame2)
 
         n += 1
