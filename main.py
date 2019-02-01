@@ -4,6 +4,8 @@ import vehicles
 import time
 import imutils
 import PlateDetection as licPlateDetect
+from random import randint
+from vehicles import Car
 
 import Main
 from utils.color_recognition_module import color_recognition_api
@@ -11,8 +13,14 @@ from utils.color_recognition_module import color_recognition_api
 cnt_up=0
 cnt_down=0
 
-
-cap=cv2.VideoCapture("russian.mp4")
+cap=cv2.VideoCapture("Highway1.mp4")
+car_cascade = cv2.CascadeClassifier('cars.xml')
+length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+n = 0
+pid = 0
+cars = []
+allCars = set([])
+frameCount = 0
 
 #Get width and height of video
 
@@ -60,7 +68,7 @@ kernalCl = np.ones((11,11),np.int)
 
 
 font = cv2.FONT_HERSHEY_SIMPLEX
-cars = []
+carsVelocity = []
 max_p_age = 4
 pid = 1
 
@@ -106,12 +114,28 @@ wait = 1 / fps
 while(cap.isOpened()):
     time.sleep(wait)
     ret,frame=cap.read()
+
     if frame is None:
         break
+
+    frameCount += 1
+    x1, y1 = 639, 178
+    x2, y2 = 451, 719
+    lineThickness = 2
+    cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
+
+    x3, y3 = 727, 187
+    x4, y4 = 790, 719
+    lineThickness = 2
+    cv2.line(frame, (x3, y3), (x4, y4), (0, 0, 255), 2)     
+
+    gray = cv2.cvtColor(frame[180:], cv2.COLOR_BGR2GRAY)
+
+    objects = car_cascade.detectMultiScale(gray, 1.2, 5)
     height, width, layers = frame.shape
     new_h = height // 2
     new_w = width // 2
-    frame2 = frame[100:] #Farkhad
+    """frame2 = frame[100:] #Farkhad
     licPlate = Main.main(frame2) #Farkhad
     if(licPlate != ""): #Farkhad
         result = cv2.resize(frame2, (0, 0), fy = 0.5, fx = 0.5) #Farkhad
@@ -119,15 +143,44 @@ while(cap.isOpened()):
         file = open("LicensePlates.txt", "a") #Farkhad
         file.write("{}\n".format(licPlate)) #Farkhad
         file.close() #Farkhad
-        print("Detected license plate: " + str(licPlate) + "\n") #Farkhad
-    frame = cv2.resize(frame, (new_w, new_h))
+        print("Detected license plate: " + str(licPlate) + "\n") #Farkhad"""
+    #frame = cv2.resize(frame, (new_w, new_h))
     frame_num += 1
     #transpose(image, image)
     #frame = imutils.rotate(frame, -90)
-    for i in cars:
+    for i in carsVelocity:
         i.age_one()
     fgmask=fgbg.apply(frame)
     fgmask2=fgbg.apply(frame)
+
+    for (x, y, w, h) in objects:
+        y += 180
+        found = False
+        cx, cy = x + w / 2, y + h / 2
+        if len(cars) == 0:
+            newCar = Car(pid, cx, cy, frameCount)
+            cars.append(newCar)
+            allCars.add(newCar)
+            pid += 1
+            continue
+        for i in cars:
+            if abs(cx - i.getCX()) <= 30 and abs(cy - i.getCY()) <= 30:
+                found = True
+                i.updateCoords(cx, cy)
+                i.updateFrameCount(frameCount)
+                allCars.add(i)
+                break
+        if not found:
+            newCar = Car(pid, cx, cy, frameCount)
+            cars.append(newCar)
+            allCars.add(newCar)
+            pid += 1
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    cars = [x for x in cars if not (frameCount - x.getFrameCount()) > 10]  
+
+    for i in cars:
+        cv2.putText(frame, str(i.getID()), (int(i.getCX()), int(i.getCY())), cv2.FONT_HERSHEY_SIMPLEX, 1, (randint(0, 255), randint(0, 255), randint(0, 255)), 1, cv2.LINE_AA)
 
     if ret==True:
 
@@ -160,16 +213,16 @@ while(cap.isOpened()):
                 x,y,w,h=cv2.boundingRect(cnt)
                 crop_vehicle = frame[y + int(h/2):y+h, x:x+w]
                 #cv2.imwrite("secondPass.jpg", crop_vehicle)
-                licPlate = Main.main(crop_vehicle)
+                """licPlate = Main.main(crop_vehicle)
                 if(licPlate != ""):
                     file = open("plates.txt", "a")
                     file.write(licPlate + "\n")
-                    file.close()
+                    file.close()"""
                 #print(Main.main(crop_vehicle))
                 #print(str(x) + " " + str(y) + " " + str(w) + " " + str(h))
                 new=True
                 """if cy in range(up_limit,down_limit):
-                    for i in cars:
+                    for i in carsVelocity:
                         if abs(x - i.getX()) <= w and abs(y - i.getY()) <= h:
                             new = False
                             i.updateCoords(cx, cy)
@@ -187,13 +240,13 @@ while(cap.isOpened()):
                             elif i.getDir()=='up'and i.getY()<up_limit:
                                 i.setDone()
                         if i.timedOut():
-                            index=cars.index(i)
-                            cars.pop(index)
+                            index=carsVelocity.index(i)
+                            carsVelocity.pop(index)
                             del i
 
                     if new==True: #If nothing is detected,create new
                         p=vehicles.Car(pid,cx,cy,max_p_age)
-                        cars.append(p)
+                        carsVelocity.append(p)
                         pid+=1
 """
                 #cv2.circle(frame,(cx,cy),5,(0,0,255),-1)
@@ -257,7 +310,7 @@ while(cap.isOpened()):
         fline.draw_line(frame)
         sline.draw_line(frame)
             
-            #for i in cars:
+            #for i in carsVelocity:
             #    cv2.putText(frame, str(i.getId()), (i.getX(), i.getY()), font, 0.3, i.getRGB(), 1, cv2.LINE_AA)
 
 
@@ -275,13 +328,30 @@ while(cap.isOpened()):
         #cv2.putText(frame, str_down, (10, 90), font, 0.5, (255, 0, 0), 1, cv2.LINE_AA)
         #cv2.namedWindow('Frame',cv2.WINDOW_NORMAL)
         #cv2.resizeWindow('Frame', 1000,1000)
+        result = str(Main.main(frame))
+        if len(result) != 0:
+            print("Found plate: " + result + "\n")
+    
         cv2.imshow('Frame',frame)
 
         if cv2.waitKey(1)&0xff==ord('q'):
             break
 
+        n += 1
+
     else:
         break
+
+for i in allCars.copy():
+    i.calculateFluctuations()
+    if i.getFluctuations() == 0:
+        allCars.discard(i)
+        continue
+
+for i in sorted(allCars, key = Car.getFluctuations):
+    print(i)   
+
+print("Finished.")
 
 cap.release()
 cv2.destroyAllWindows()
