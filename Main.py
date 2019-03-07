@@ -270,18 +270,20 @@ def kazakhstan(result1, result2, result3):
 
 def main(frame):
 
+    plateCoordinates = []
+
     blnKNNTrainingSuccessful = DetectChars.loadKNNDataAndTrainKNN()         # attempt KNN training
 
     if blnKNNTrainingSuccessful == False:                               # if KNN training was not successful
         print("\nERROR: KNN traning was not successful!\n")  # show error message
-        return ""                                                # and exit program
+        return "", []                                          # and exit program
     # end if
 
     imgOriginalScene = frame
 
     if imgOriginalScene is None:                            # if image was not read successfully
         print("\nERROR: image not read from file!\n\n")  # print error message to std out
-        return ""                                              # and exit program
+        return "", []                                             # and exit program
     # end if
 
     listOfPossiblePlates = DetectPlates.detectPlatesInScene(imgOriginalScene)           # detect plates
@@ -289,8 +291,8 @@ def main(frame):
     listOfPossiblePlates = DetectChars.detectCharsInPlates(listOfPossiblePlates)        # detect chars in plates
 
     if len(listOfPossiblePlates) == 0:                          # if no plates were found
-        print("\nNO license plates were detected!\n")  # inform user no plates were found
-        return ""
+        #print("\nNO license plates were detected!\n")  # inform user no plates were found
+        return "", []
     else:
         #cv2.imwrite("detected.jpg", frame)                                                       # else
                 # if we get in here list of possible plates has at leat one plate
@@ -363,10 +365,12 @@ def main(frame):
 
         if len(licPlate.strChars) == 0:                     # if no chars were found in the plate
             print("\nNO characters were detected!\n\n")  # show message
-            return ""                                          # and exit program
+            return "", []                                          # and exit program
         # end if
 
-        drawRedRectangleAroundPlate(imgOriginalScene, licPlate)             # draw red rectangle around plate
+        plateCoordinates = drawRedRectangleAroundPlate(imgOriginalScene, licPlate)             # draw red rectangle around plate
+
+        #print("Plate coordinates: " + str(plateCoordinates) + "\n")
 
         licPlate.strChars = russia(filtered_result, tesseractEnlarged3, tesseractEnlarged4)
 
@@ -375,7 +379,7 @@ def main(frame):
 
         licPlate.strChars = licPlate.strChars.upper()
 
-    return licPlate.strChars
+    return licPlate.strChars, plateCoordinates
 # end main
 
 ###################################################################################################
@@ -387,6 +391,8 @@ def drawRedRectangleAroundPlate(imgOriginalScene, licPlate):
     cv2.line(imgOriginalScene, tuple(p2fRectPoints[1]), tuple(p2fRectPoints[2]), SCALAR_RED, 2)
     cv2.line(imgOriginalScene, tuple(p2fRectPoints[2]), tuple(p2fRectPoints[3]), SCALAR_RED, 2)
     cv2.line(imgOriginalScene, tuple(p2fRectPoints[3]), tuple(p2fRectPoints[0]), SCALAR_RED, 2)
+
+    return p2fRectPoints
 # end function
 
 ###################################################################################################
