@@ -93,26 +93,25 @@ if __name__ == "__main__":
                 crop_vehicle = frame[y:y + h, x:x + w]
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-                result, plateCoordinates = str(Main.main(crop_vehicle))
+                result, plateCoordinates = Main.main(crop_vehicle)
                 if result != "":
 
                     print("License Plate: " + str(result) + "\n")
 
-                    #color_crop = crop_vehicle[
-
-                    color = color_recognition_api.color_recognition(crop_vehicle)
+                    color = color_recognition_api.color_recognition(frame[int(plateCoordinates[2][1] - 150) : int(plateCoordinates[0][1] - 100), int(plateCoordinates[1][0]) : int(plateCoordinates[3][0])])
                     print("Color: " + str(color) + "\n")
                     print("-----------------------------------------------------------------\n")
                     
-                    """if previous != result:
+                    if previous != result:
                         print("Send...\n")
                         r = requests.post("https://fathomless-plains-27484.herokuapp.com/api/v1/s3M5aCMtypyas8fs1VPHhw/passages", data = {'car_num': result, 'color': color, 'camera_id': 1})
                         print(r.status_code, r.reason)
                         previous = result
                     else:
-                        print("Repeated. Not sent.")"""
+                        print("Repeated. Not sent.")
+                    cv2.imshow("Warped", frame[int(plateCoordinates[2][1] - 200) : int(plateCoordinates[0][1] - 100), int(plateCoordinates[1][0]) : int(plateCoordinates[3][0])])
 
-                    cv2.imshow('Video', crop_vehicle[plateCoordinates[2][1]:plateCoordinates[4][1], plateCoordinates[3][2]:plateCoordinates[1][2]])
+        cv2.imshow('Video', frame)
             #Main.main(frame2)
 
         if cv2.waitKey(1)&0xff==ord('q'):
