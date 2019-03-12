@@ -4,45 +4,23 @@ import Main
 import requests
 from utils.color_recognition_module import color_recognition_api
 import numpy as np
+import json
 
-class roiLine:
-    #pixel pos, real position, and width of line in pixels
-    def __init__(self, pos, real_pos, width = 20):
-        self.pos = pos
-        self.real_pos = real_pos
-        self.last_passed = {}
-        self.width = width
-        self.line_counter = False
-   
-    def is_passing(self, cy, cx):
-        if(self.pos + self.width >= cy and self.pos - self.width <= cy):
-            self.line_counter = True
-            if not ((cy / cx) in self.last_passed):
-                self.last_passed[(cy / cx)] = (time.time(), cx) #use license number detection instead of this
-            return True
-        return False
+with open('./config.json') as f:
+    config = json.load(f)
 
-    def draw_line(self, frame):
-        if self.line_counter:
-            cv2.line(frame, (0, self.pos), (len(frame[0]), self.pos), (0, 0xFF, 0), 5)
-        else:
-            cv2.line(frame, (0, self.pos), (len(frame[0]), self.pos), (0, 0, 0xFF), 5)
+ip = str(config["ip"])
 
 if __name__ == "__main__":
     
-    cap = cv2.VideoCapture("VIDEO4.avi")
-    length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    cap = cv2.VideoCapture(ip)
     n = 0
-    clip = VideoFileClip("VIDEO4.avi")
     previous = ""
 
     w = cap.get(3)
     h = cap.get(4)
     frameArea = h * w
     areaTH = frameArea / 400
-
-    fline = roiLine(150, 0)
-    sline = roiLine(250, 5)
 
     #Background Subtractor
     fgbg = cv2.createBackgroundSubtractorMOG2(detectShadows = True)
@@ -73,9 +51,6 @@ if __name__ == "__main__":
         mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernalCl)
         mask2 = cv2.morphologyEx(mask2, cv2.MORPH_CLOSE, kernalCl)
 
-        fline.line_counter = False
-        sline.line_counter = False
-
         #Find Contours
         _, countours0, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
@@ -104,12 +79,13 @@ if __name__ == "__main__":
                     
                     if previous != result:
                         print("Send...\n")
-                        r = requests.post("https://fathomless-plains-27484.herokuapp.com/api/v1/s3M5aCMtypyas8fs1VPHhw/passages", data = {'car_num': result, 'color': color, 'camera_id': 1})
+                        r = requests.post("https://fathomless-plains-27484.herokuapp.com/api/v1/s3M5aCMtypyas8fs1VPHhw/passage", data = {'car_num': result, 'color': color, 'camera_id': 1})
                         print(r.status_code, r.reason)
                         previous = result
                     else:
                         print("Repeated. Not sent.")
-                    cv2.imshow("Warped", frame[int(plateCoordinates[2][1] - 200) : int(plateCoordinates[0][1] - 100), int(plateCoordinates[1][0]) : int(plateCoordinates[3][0])])
+                    
+                    #cv2.imshow("Warped", frame[int(plateCoordinates[2][1] - 200) : int(plateCoordinates[0][1] - 100), int(plateCoordinates[1][0]) : int(plateCoordinates[3][0])])
 
         cv2.imshow('Video', frame)
             #Main.main(frame2)
